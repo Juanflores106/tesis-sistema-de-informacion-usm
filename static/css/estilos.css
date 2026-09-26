@@ -1,0 +1,66 @@
+/* Estilos propios del Sistema de Información - Colegio Marycarmen.
+   Complementan a Bootstrap 5; solo se define lo que Bootstrap no trae. */
+
+:root {
+  --altura-encabezado: 56px;
+  --ancho-menu: 250px;
+}
+
+/* ---------- Menú lateral ---------- */
+@media (min-width: 992px) {
+  .menu-lateral {
+    width: var(--ancho-menu);
+    flex-shrink: 0;
+    position: sticky;
+    top: var(--altura-encabezado);
+    height: calc(100vh - var(--altura-encabezado));
+    overflow-y: auto;
+  }
+}
+
+.menu-lateral .nav-link {
+  color: var(--bs-body-color);
+  padding: 0.55rem 1.25rem;
+  border-left: 3px solid transparent;
+}
+
+.menu-lateral .nav-link:hover {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.menu-lateral .nav-link.active {
+  color: var(--bs-primary);
+  background-color: var(--bs-primary-bg-subtle);
+  border-left-color: var(--bs-primary);
+  font-weight: 600;
+}
+
+.menu-lateral .nav-link i {
+  margin-right: 0.5rem;
+}
+
+.menu-titulo {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bs-secondary-color);
+  padding: 1rem 1.25rem 0.25rem;
+}
+
+/* ---------- Contenido ---------- */
+.contenido {
+  min-width: 0; /* evita que las tablas anchas desborden la pantalla */
+}
+
+.caja-login {
+  max-width: 420px;
+}
+
+.tabla-datos th {
+  white-space: nowrap;
+}
+
+.ficha dt {
+  color: var(--bs-secondary-color);
+  font-weight: 400;
+}

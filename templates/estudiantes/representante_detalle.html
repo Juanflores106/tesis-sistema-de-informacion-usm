@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block titulo %}{{ representante.nombre_completo }}{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'estudiantes:representante_lista' %}">Representantes</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ representante.nombre_completo }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+  <div>
+    <h1 class="h3 mb-1">{{ representante.apellidos }}, {{ representante.nombres }}</h1>
+    <div class="text-body-secondary">C.I. {{ representante.nacionalidad }}-{{ representante.cedula }}</div>
+  </div>
+  {% if perms.estudiantes.change_representante %}
+    <a href="{% url 'estudiantes:representante_editar' representante.pk %}" class="btn btn-outline-primary">
+      <i class="bi bi-pencil"></i> Modificar datos
+    </a>
+  {% endif %}
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header">Datos personales</div>
+      <div class="card-body">
+        <dl class="row mb-0 ficha">
+          <dt class="col-sm-5">Sexo</dt>
+          <dd class="col-sm-7">{{ representante.get_sexo_display }}</dd>
+          <dt class="col-sm-5">Fecha de nacimiento</dt>
+          <dd class="col-sm-7">{{ representante.fecha_nacimiento|date:"d/m/Y"|default:"—" }}</dd>
+          <dt class="col-sm-5">Ocupación</dt>
+          <dd class="col-sm-7">{{ representante.ocupacion|default:"—" }}</dd>
+          <dt class="col-sm-5">Lugar de trabajo</dt>
+          <dd class="col-sm-7">{{ representante.lugar_trabajo|default:"—" }}</dd>
+          <dt class="col-sm-5">Dirección de habitación</dt>
+          <dd class="col-sm-7 mb-0">{{ representante.direccion|linebreaksbr }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header">Contacto</div>
+      <div class="card-body">
+        <dl class="row mb-0 ficha">
+          <dt class="col-sm-5">Teléfono principal</dt>
+          <dd class="col-sm-7">{{ representante.telefono_principal }}</dd>
+          <dt class="col-sm-5">Teléfono secundario</dt>
+          <dd class="col-sm-7">{{ representante.telefono_secundario|default:"—" }}</dd>
+          <dt class="col-sm-5">Correo electrónico</dt>
+          <dd class="col-sm-7 mb-0">{{ representante.correo|default:"—" }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-header">Estudiantes que representa</div>
+      <div class="table-responsive">
+        <table class="table align-middle mb-0 tabla-datos">
+          <thead class="table-light">
+            <tr>
+              <th>Cédula escolar</th>
+              <th>Estudiante</th>
+              <th>Parentesco</th>
+              <th>Estatus</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for relacion in relaciones %}
+              {% with estudiante=relacion.estudiante %}
+                <tr>
+                  <td>{{ estudiante.cedula_escolar }}</td>
+                  <td>
+                    <a href="{% url 'estudiantes:estudiante_detalle' estudiante.pk %}">{{ estudiante.nombre_completo }}</a>
+                    {% if relacion.es_representante_legal %}<span class="badge text-bg-primary ms-1">Representante legal</span>{% endif %}
+                  </td>
+                  <td>{{ relacion.get_parentesco_display }}</td>
+                  <td>{% include 'estudiantes/_estatus.html' %}</td>
+                </tr>
+              {% endwith %}
+            {% empty %}
+              <tr><td colspan="4" class="text-center text-body-secondary py-4">No tiene estudiantes asignados.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

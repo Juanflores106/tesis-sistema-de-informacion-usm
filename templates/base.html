@@ -1,0 +1,120 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Inicio{% endblock %} | Colegio Marycarmen</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body class="bg-body-tertiary">
+{% if user.is_authenticated %}
+  {# ------------------------------ Encabezado ------------------------------ #}
+  <nav class="navbar navbar-dark bg-primary sticky-top shadow-sm encabezado">
+    <div class="container-fluid">
+      <button class="navbar-toggler d-lg-none me-2" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#menu-lateral" aria-controls="menu-lateral" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand me-auto" href="{% url 'inicio' %}">
+        <i class="bi bi-mortarboard-fill"></i> Colegio Marycarmen
+      </a>
+      <div class="dropdown">
+        <button class="btn btn-link link-light text-decoration-none dropdown-toggle" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle"></i>
+          <span class="d-none d-sm-inline">{{ user.get_full_name|default:user.username }}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><h6 class="dropdown-header">{{ rol_usuario }}</h6></li>
+          <li>
+            <a class="dropdown-item" href="{% url 'usuarios:cambiar_clave' %}">
+              <i class="bi bi-key"></i> Cambiar contraseña
+            </a>
+          </li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <form method="post" action="{% url 'usuarios:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="d-flex">
+    {# ------------------ Menú lateral: cada opción según el rol ------------------ #}
+    {% with ruta=request.resolver_match %}
+    <aside class="offcanvas-lg offcanvas-start menu-lateral bg-body border-end" tabindex="-1"
+           id="menu-lateral" aria-labelledby="menu-lateral-titulo">
+      <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="menu-lateral-titulo">Menú</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                data-bs-target="#menu-lateral" aria-label="Cerrar"></button>
+      </div>
+      <nav class="offcanvas-body nav flex-column py-2">
+        <a class="nav-link {% if ruta.url_name == 'inicio' %}active{% endif %}" href="{% url 'inicio' %}">
+          <i class="bi bi-house-door"></i> Inicio
+        </a>
+
+        {% if perms.estudiantes.view_estudiante or perms.estudiantes.view_representante %}
+          <div class="menu-titulo">Control de estudios</div>
+          {% if perms.estudiantes.view_estudiante %}
+            <a class="nav-link {% if ruta.namespace == 'estudiantes' and 'representante_' not in ruta.url_name %}active{% endif %}"
+               href="{% url 'estudiantes:estudiante_lista' %}">
+              <i class="bi bi-people"></i> Estudiantes
+            </a>
+          {% endif %}
+          {% if perms.estudiantes.view_representante %}
+            <a class="nav-link {% if ruta.namespace == 'estudiantes' and 'representante_' in ruta.url_name %}active{% endif %}"
+               href="{% url 'estudiantes:representante_lista' %}">
+              <i class="bi bi-person-vcard"></i> Representantes
+            </a>
+          {% endif %}
+        {% endif %}
+
+        {% if perms.auth.view_user %}
+          <div class="menu-titulo">Seguridad</div>
+          <a class="nav-link {% if ruta.namespace == 'usuarios' and ruta.url_name != 'cambiar_clave' %}active{% endif %}"
+             href="{% url 'usuarios:lista' %}">
+            <i class="bi bi-shield-lock"></i> Usuarios
+          </a>
+        {% endif %}
+
+        {% if user.is_superuser %}
+          <div class="menu-titulo">Soporte técnico</div>
+          <a class="nav-link" href="{% url 'admin:index' %}">
+            <i class="bi bi-gear"></i> Panel de administración
+          </a>
+        {% endif %}
+      </nav>
+    </aside>
+    {% endwith %}
+
+    <main class="flex-grow-1 p-3 p-md-4 contenido">
+{% else %}
+  <main class="container py-5">
+{% endif %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+
+      {% block contenido %}{% endblock %}
+    </main>
+{% if user.is_authenticated %}
+  </div>
+{% endif %}
+
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block titulo %}{% if relacion %}Modificar representante{% else %}Asignar representante{% endif %}{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'estudiantes:estudiante_lista' %}">Estudiantes</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'estudiantes:estudiante_detalle' estudiante.pk %}">{{ estudiante.nombre_completo }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% if relacion %}Modificar representante{% else %}Asignar representante{% endif %}</li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-lg-7">
+    <h1 class="h3 mb-1">{% if relacion %}Modificar representante{% else %}Asignar representante{% endif %}</h1>
+    <p class="text-body-secondary">Estudiante: {{ estudiante.nombre_completo }} ({{ estudiante.cedula_escolar }})</p>
+
+    <form method="post" novalidate class="card shadow-sm">
+      {% csrf_token %}
+      <div class="card-body">
+        {% include 'includes/errores_formulario.html' %}
+        {% if relacion %}
+          <p class="mb-3">
+            Representante: <strong>{{ relacion.representante.nombre_completo }}</strong>
+            (C.I. {{ relacion.representante.nacionalidad }}-{{ relacion.representante.cedula }})
+          </p>
+        {% endif %}
+        {{ form|crispy }}
+        {% if not relacion and perms.estudiantes.add_representante %}
+          <p class="small mb-0">
+            ¿El representante no está registrado?
+            <a href="{% url 'estudiantes:representante_crear' %}?next={{ request.path|urlencode }}">Regístrelo aquí</a>
+            y luego vuelva a esta pantalla.
+          </p>
+        {% endif %}
+      </div>
+      <div class="card-footer d-flex justify-content-end gap-2">
+        <a href="{% url 'estudiantes:estudiante_detalle' estudiante.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

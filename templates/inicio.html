@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+<div class="mb-4">
+  <h1 class="h3 mb-1">Bienvenido(a), {{ user.first_name|default:user.username }}</h1>
+  <p class="text-body-secondary mb-0">Rol: <strong>{{ rol_usuario }}</strong></p>
+</div>
+
+<div class="row g-3 mb-4">
+  {% if total_estudiantes_activos is not None %}
+    <div class="col-sm-6 col-xl-4">
+      <a href="{% url 'estudiantes:estudiante_lista' %}?estatus=ACTIVO" class="card shadow-sm text-decoration-none h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <i class="bi bi-people text-primary fs-1"></i>
+          <div>
+            <div class="fs-2 fw-semibold lh-1">{{ total_estudiantes_activos }}</div>
+            <div class="text-body-secondary">Estudiantes activos</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endif %}
+  {% if total_representantes is not None %}
+    <div class="col-sm-6 col-xl-4">
+      <a href="{% url 'estudiantes:representante_lista' %}" class="card shadow-sm text-decoration-none h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <i class="bi bi-person-vcard text-success fs-1"></i>
+          <div>
+            <div class="fs-2 fw-semibold lh-1">{{ total_representantes }}</div>
+            <div class="text-body-secondary">Representantes registrados</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endif %}
+  {% if total_usuarios_activos is not None %}
+    <div class="col-sm-6 col-xl-4">
+      <a href="{% url 'usuarios:lista' %}" class="card shadow-sm text-decoration-none h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <i class="bi bi-shield-lock text-warning fs-1"></i>
+          <div>
+            <div class="fs-2 fw-semibold lh-1">{{ total_usuarios_activos }}</div>
+            <div class="text-body-secondary">Usuarios activos</div>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+{% if perms.estudiantes.add_estudiante or perms.estudiantes.add_representante or perms.auth.add_user %}
+  <h2 class="h5 mb-3">Accesos rápidos</h2>
+  <div class="d-flex flex-wrap gap-2">
+    {% if perms.estudiantes.add_estudiante %}
+      <a href="{% url 'estudiantes:estudiante_crear' %}" class="btn btn-outline-primary">
+        <i class="bi bi-person-plus"></i> Registrar estudiante
+      </a>
+    {% endif %}
+    {% if perms.estudiantes.add_representante %}
+      <a href="{% url 'estudiantes:representante_crear' %}" class="btn btn-outline-primary">
+        <i class="bi bi-person-vcard"></i> Registrar representante
+      </a>
+    {% endif %}
+    {% if perms.auth.add_user %}
+      <a href="{% url 'usuarios:crear' %}" class="btn btn-outline-primary">
+        <i class="bi bi-shield-plus"></i> Registrar usuario
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

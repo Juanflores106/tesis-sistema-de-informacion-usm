@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block titulo %}{% if form.instance.pk %}Modificar usuario{% else %}Registrar usuario{% endif %}{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'usuarios:lista' %}">Usuarios</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Modificar{% else %}Registrar{% endif %}</li>
+  </ol>
+</nav>
+
+<h1 class="h3 mb-3">{% if form.instance.pk %}Modificar usuario: {{ form.instance.username }}{% else %}Registrar usuario{% endif %}</h1>
+
+<form method="post" novalidate class="card shadow-sm">
+  {% csrf_token %}
+  <div class="card-body">
+    {% include 'includes/errores_formulario.html' %}
+
+    <h2 class="h6 text-body-secondary text-uppercase mb-3">Datos del trabajador</h2>
+    <div class="row">
+      <div class="col-md-6">{{ form.first_name|as_crispy_field }}</div>
+      <div class="col-md-6">{{ form.last_name|as_crispy_field }}</div>
+      <div class="col-md-4">{{ form.cedula|as_crispy_field }}</div>
+      <div class="col-md-4">{{ form.cargo|as_crispy_field }}</div>
+      <div class="col-md-4">{{ form.telefono|as_crispy_field }}</div>
+      <div class="col-md-6">{{ form.email|as_crispy_field }}</div>
+    </div>
+
+    <h2 class="h6 text-body-secondary text-uppercase mt-2 mb-3">Acceso al sistema</h2>
+    <div class="row">
+      <div class="col-md-6">{{ form.rol|as_crispy_field }}</div>
+      <div class="col-md-6">{{ form.username|as_crispy_field }}</div>
+      {% if form.password1 %}
+        <div class="col-md-6">{{ form.password1|as_crispy_field }}</div>
+        <div class="col-md-6">{{ form.password2|as_crispy_field }}</div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card-footer d-flex justify-content-end gap-2">
+    <a href="{% url 'usuarios:lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar</button>
+  </div>
+</form>
+{% endblock %}

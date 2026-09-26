@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block titulo %}Asignar contraseña{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'usuarios:lista' %}">Usuarios</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Asignar contraseña</li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-lg-6">
+    <h1 class="h3 mb-3">Asignar contraseña a {{ usuario.get_full_name|default:usuario.username }}</h1>
+    <form method="post" novalidate class="card shadow-sm">
+      {% csrf_token %}
+      <div class="card-body">
+        <p class="text-body-secondary">
+          Use esta opción cuando el usuario olvide su contraseña. Entréguele la nueva
+          contraseña y pídale que la cambie al iniciar sesión.
+        </p>
+        {{ form|crispy }}
+      </div>
+      <div class="card-footer d-flex justify-content-end gap-2">
+        <a href="{% url 'usuarios:lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

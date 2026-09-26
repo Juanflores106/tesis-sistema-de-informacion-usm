@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block titulo %}{% if object %}Modificar representante{% else %}Registrar representante{% endif %}{% endblock %}
+
+{% block contenido %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'estudiantes:representante_lista' %}">Representantes</a></li>
+    {% if object %}
+      <li class="breadcrumb-item"><a href="{% url 'estudiantes:representante_detalle' object.pk %}">{{ object.nombre_completo }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Modificar</li>
+    {% else %}
+      <li class="breadcrumb-item active" aria-current="page">Registrar</li>
+    {% endif %}
+  </ol>
+</nav>
+
+<h1 class="h3 mb-3">{% if object %}Modificar representante{% else %}Registrar representante{% endif %}</h1>
+
+<form method="post" novalidate class="card shadow-sm">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  <div class="card-body">
+    {% include 'includes/errores_formulario.html' %}
+
+    <h2 class="h6 text-body-secondary text-uppercase mb-3">Identificación</h2>
+    <div class="row">
+      <div class="col-md-3">{{ form.nacionalidad|as_crispy_field }}</div>
+      <div class="col-md-4">{{ form.cedula|as_crispy_field }}</div>
+      <div class="col-md-5">{{ form.fecha_nacimiento|as_crispy_field }}</div>
+      <div class="col-md-5">{{ form.nombres|as_crispy_field }}</div>
+      <div class="col-md-5">{{ form.apellidos|as_crispy_field }}</div>
+      <div class="col-md-2">{{ form.sexo|as_crispy_field }}</div>
+    </div>
+
+    <h2 class="h6 text-body-secondary text-uppercase mt-2 mb-3">Contacto y trabajo</h2>
+    <div class="row">
+      <div class="col-md-4">{{ form.telefono_principal|as_crispy_field }}</div>
+      <div class="col-md-4">{{ form.telefono_secundario|as_crispy_field }}</div>
+      <div class="col-md-4">{{ form.correo|as_crispy_field }}</div>
+      <div class="col-md-6">{{ form.ocupacion|as_crispy_field }}</div>
+      <div class="col-md-6">{{ form.lugar_trabajo|as_crispy_field }}</div>
+      <div class="col-12">{{ form.direccion|as_crispy_field }}</div>
+    </div>
+  </div>
+  <div class="card-footer d-flex justify-content-end gap-2">
+    <a href="{% if next %}{{ next }}{% elif object %}{% url 'estudiantes:representante_detalle' object.pk %}{% else %}{% url 'estudiantes:representante_lista' %}{% endif %}"
+       class="btn btn-outline-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% if estudiante.estatus == 'ACTIVO' %}
+  <span class="badge text-bg-success">{{ estudiante.get_estatus_display }}</span>
+{% elif estudiante.estatus == 'EGRESADO' %}
+  <span class="badge text-bg-info">{{ estudiante.get_estatus_display }}</span>
+{% else %}
+  <span class="badge text-bg-secondary">{{ estudiante.get_estatus_display }}</span>
+{% endif %}

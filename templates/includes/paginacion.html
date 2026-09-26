@@ -1,0 +1,23 @@
+{% load interfaz %}
+{% if is_paginated %}
+<nav aria-label="Paginación" class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+  <small class="text-body-secondary">
+    Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ paginator.count }} registros
+  </small>
+  <ul class="pagination pagination-sm mb-0">
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="{% url_pagina page_obj.previous_page_number %}">Anterior</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+    {% endif %}
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">{{ page_obj.number }} de {{ paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="{% url_pagina page_obj.next_page_number %}">Siguiente</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}

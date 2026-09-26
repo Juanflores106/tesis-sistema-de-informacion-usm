@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block titulo %}Quitar representante{% endblock %}
+
+{% block contenido %}
+<div class="row">
+  <div class="col-lg-6">
+    <h1 class="h3 mb-3">Quitar representante</h1>
+    <form method="post" class="card shadow-sm border-danger">
+      {% csrf_token %}
+      <div class="card-body">
+        <p>
+          ¿Desea quitar a <strong>{{ relacion.representante.nombre_completo }}</strong>
+          ({{ relacion.get_parentesco_display }}) como representante de
+          <strong>{{ relacion.estudiante.nombre_completo }}</strong>?
+        </p>
+        <p class="text-body-secondary small mb-0">
+          Solo se elimina el vínculo entre ambos. Los datos del representante se conservan.
+        </p>
+      </div>
+      <div class="card-footer d-flex justify-content-end gap-2">
+        <a href="{% url 'estudiantes:estudiante_detalle' relacion.estudiante_id %}" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-danger"><i class="bi bi-x-lg"></i> Quitar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
